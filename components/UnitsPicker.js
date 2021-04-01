@@ -1,8 +1,7 @@
 import React from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
 import { Picker } from "@react-native-community/picker";
-
-import { colors, customFonts } from "../constants/index";
+import {customFonts} from "../constants"
 const { PRO_SANS } = customFonts;
 
 const UnitsPicker = ({ unitsSystem, setUnitsSystem }) => {
@@ -29,7 +28,7 @@ const styles = StyleSheet.create({
     height: 50,
     ...Platform.select({
       ios: {
-        top: -20,
+        top: 0,
       },
       android: {
         top: 20,
