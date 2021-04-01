@@ -13,9 +13,10 @@ const WeatherDetails = ({ currentWeather, unitsSystem }) => {
   } = currentWeather;
 
   const windspeed =
-    unitsSystem === "metrics"
+    unitsSystem === "metric"
       ? `${Math.round(speed)} m/s`
       : `${Math.round(speed)} miles/h`;
+      console.log(unitsSystem);
 
   return (
     <View style={styles.weatherDetails}>

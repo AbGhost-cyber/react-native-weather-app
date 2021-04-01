@@ -5,14 +5,14 @@ import * as Location from "expo-location";
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
 import { enableScreens } from "react-native-screens";
+import { WEATHER_API_KEY } from "react-native-dotenv";
 
 import WeatherInfo from "./components/WeatherInfo";
 import UnitsPicker from "./components/UnitsPicker";
-import { colors, customFonts } from "./constants/index";
+import { colors } from "./constants/index";
 import ReloadIcon from "./components/ReloadIcon";
 import WeatherDetails from "./components/WeatherDetails";
 
-const WEATHER_API_KEY = "3b726aee237ef9850c9fce72c9341884";
 const BASE_WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather?";
 
 enableScreens();
