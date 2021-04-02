@@ -13,7 +13,7 @@ const UnitsPicker = ({ unitsSystem, setUnitsSystem }) => {
         mode="dropdown"
         itemStyle={styles.itemStyle}
       >
-        <Picker.Item label="C°" value="metrics" />
+        <Picker.Item label="C°" value="metric" />
         <Picker.Item label="F°" value="imperial" />
       </Picker>
     </View>
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     height: 50,
     ...Platform.select({
       ios: {
-        top: 0,
+        top: -20,
       },
       android: {
         top: 20,
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     width: 50,
   },
   itemStyle: {
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: PRO_SANS,
   },
 });
