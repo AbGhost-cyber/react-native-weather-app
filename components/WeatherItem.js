@@ -1,7 +1,14 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+  Dimensions,
+} from "react-native";
 import * as Location from "expo-location";
+import { useSelector, useDispatch } from "react-redux";
 
 import { BASE_WEATHER_URL } from "../constants";
 import { WEATHER_API_KEY } from "react-native-dotenv";
@@ -11,13 +18,18 @@ import { colors } from "../constants/index";
 import ReloadIcon from "./ReloadIcon";
 import WeatherDetails from "./WeatherDetails";
 import Weather from "../model/Weather";
+import { addWeather } from "../store/actions/weather";
 
-export let userLocationWeather = null;
+const { width } = Dimensions.get("window");
 
-const WeatherItem = ({ unitsys, city, weatherUrl }) => {
+const WeatherItem = ({ unitsys, weatherUrl }) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [currentWeather, setCurrentWeather] = useState(null);
   const [unitsSystem, setUnitsSystem] = useState(unitsys);
+
+  const dispatch = useDispatch();
+
+  //export let userLocationWeather;
 
   useEffect(() => {
     load();
@@ -33,21 +45,8 @@ const WeatherItem = ({ unitsys, city, weatherUrl }) => {
         setErrorMessage("Access to Location is required to run the app");
         return;
       }
-      const location = await Location.getCurrentPositionAsync();
-
-      const { latitude, longitude } = location.coords;
-
-      userLocationWeather = new Weather(
-        latitude,
-        longitude,
-        "",
-        BASE_WEATHER_URL,
-        unitsSystem,
-        WEATHER_API_KEY
-      );
-
       //const weatherUrl = `${BASE_WEATHER_URL}lat=${latitude}&lon=${longitude}&units=${unitsSystem}&appid=${WEATHER_API_KEY}`;
-
+      addUserLocationWeather();
       const response = await fetch(weatherUrl);
       const result = await response.json();
 
@@ -60,6 +59,16 @@ const WeatherItem = ({ unitsys, city, weatherUrl }) => {
       setErrorMessage(error.message);
     }
   }
+
+  const addUserLocationWeather = useCallback(async () => {
+    const location = await Location.getCurrentPositionAsync();
+
+    const { latitude, longitude } = location.coords;
+
+    dispatch(
+      addWeather(latitude, longitude, null, BASE_WEATHER_URL, unitsSystem)
+    );
+  }, [unitsSystem]);
 
   if (currentWeather) {
     return (
@@ -83,6 +92,7 @@ const WeatherItem = ({ unitsys, city, weatherUrl }) => {
     return (
       <View style={styles.container}>
         <Text style={{ alignSelf: "center" }}>{errorMessage}</Text>
+        <ReloadIcon load={load} />
         <StatusBar style="auto" />
       </View>
     );
@@ -102,10 +112,16 @@ export default WeatherItem;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "white",
     justifyContent: "center",
+    width: width,
   },
   main: {
     justifyContent: "center",
     flex: 1,
+  },
+  pagination: {
+    flexDirection: "row",
+    justifyContent: "center",
   },
 });

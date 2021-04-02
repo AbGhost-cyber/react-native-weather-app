@@ -1,11 +1,19 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
 import { enableScreens } from "react-native-screens";
+import { createStore, combineReducers } from "redux";
+import { Provider } from "react-redux";
+
+import weatherReducer from "./store/reducers/weather";
 import WeatherNavigator from "./navigation/WeatherNavigator";
 
 enableScreens();
 
+const rootReducers = combineReducers({
+  weathers:weatherReducer
+})
+const store = createStore(rootReducers)
 const fetchFonts = () => {
   return Font.loadAsync({
     "Product-Sans": require("./assets/fonts/ProductSansRegular.ttf"),
@@ -25,7 +33,7 @@ export default function App() {
       />
     );
   }
-  return <WeatherNavigator />;
+  return <Provider store={store}>
+  <WeatherNavigator/>
+  </Provider>;
 }
-
-
