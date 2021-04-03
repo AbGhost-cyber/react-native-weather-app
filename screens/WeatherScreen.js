@@ -1,18 +1,42 @@
-import React from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import { StyleSheet, Text, View, Dimensions } from "react-native";
-import Animated, { multiply, divide } from "react-native-reanimated";
+import Animated, { divide } from "react-native-reanimated";
 import { useScrollHandler } from "react-native-redash/lib/module/v1";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import * as Location from "expo-location";
 
 import WeatherItem from "../components/WeatherItem";
 import Dots from "../components/Dots";
+import { addWeather } from "../store/actions/weather";
+import * as weatherActions from "../store/actions/weather";
 
 const { width, height } = Dimensions.get("window");
 
-const WeatherScreen = () => {
+const WeatherScreen = (props) => {
   const { scrollHandler, x } = useScrollHandler();
-  const weatherData = useSelector((state) => state.weathers.weatherData);
-  console.log(weatherData);
+
+  let weatherData = useSelector((state) => state.weathers.weatherData);
+
+  const dispatch = useDispatch();
+  const fetchUserLocData = useCallback(async () => {
+    let { status } = await Location.requestPermissionsAsync();
+    if (status !== "granted") {
+      // setErrorMessage("Access to Location is required to run the app");
+      return;
+    }
+    const location = await Location.getCurrentPositionAsync();
+
+    const city = await Location.reverseGeocodeAsync(location.coords);
+    console.log(city[0].city);
+
+    dispatch(addWeather(city[0].city, "metric"));
+    dispatch(weatherActions.userLocIsSaved(true));
+    console.log(weatherData.length);
+  }, [dispatch]);
+
+  useEffect(() => {
+    fetchUserLocData();
+  }, []);
 
   return (
     <View style={styles.container}>

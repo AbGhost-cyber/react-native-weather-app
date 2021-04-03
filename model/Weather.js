@@ -1,27 +1,19 @@
+import { WEATHER_API_KEY } from "react-native-dotenv";
+import { BASE_WEATHER_URL } from "../constants";
+
 class Weather {
-  constructor(
-    latitude = 0,
-    longitude = 0,
-    cityName,
-    baseUrl,
-    unitsSystem,
-    apikey
-  ) {
-    this.latitude = latitude;
-    this.longitude = longitude;
+  constructor(id, cityName, unitsSystem) {
+    this.id = id;
     this.cityName = cityName;
-    this.baseUrl = baseUrl;
     this.unitsSystem = unitsSystem;
-    this.apikey = apikey;
   }
+  #API_KEY = WEATHER_API_KEY;
+  #BASE_URL = BASE_WEATHER_URL;
   getUrl() {
-    if (this.latitude && this.longtitude) {
-      return `${this.baseUrl}lat=${this.latitude}&lon=${this.longitude}&units=${this.unitsSystem}&appid=${this.apikey}`;
-    } else {
-      return `${this.baseUrl}q=${this.cityName}&units=${this.unitsSystem}&appid=${this.apikey}`;
-    }
+    return `${this.#BASE_URL}q=${this.cityName}&units=${
+      this.unitsSystem
+    }&appid=${this.#API_KEY}`;
   }
 }
 
 export default Weather;
-

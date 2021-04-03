@@ -1,56 +1,12 @@
 import Weather from "../model/Weather";
-import { BASE_WEATHER_URL } from "../constants";
-import { WEATHER_API_KEY } from "react-native-dotenv";
 
 export const WeatherDataItems = [
-  new Weather(
-    null,
-    null,
-    "new york",
-    BASE_WEATHER_URL,
-    "metric",
-    WEATHER_API_KEY
-  ),
-  new Weather(
-    null,
-    null,
-    "shanghai",
-    BASE_WEATHER_URL,
-    "metric",
-    WEATHER_API_KEY
-  ),
-  new Weather(
-    null,
-    null,
-    "nanchang",
-    BASE_WEATHER_URL,
-    "metric",
-    WEATHER_API_KEY
-  ),
-  new Weather(
-    null,
-    null,
-    "washington",
-    BASE_WEATHER_URL,
-    "metric",
-    WEATHER_API_KEY
-  ),
-  new Weather(null, null, "delhi", BASE_WEATHER_URL, "metric", WEATHER_API_KEY),
-  new Weather(null, null, "lagos", BASE_WEATHER_URL, "metric", WEATHER_API_KEY),
-  new Weather(
-    null,
-    null,
-    "beijing",
-    BASE_WEATHER_URL,
-    "metric",
-    WEATHER_API_KEY
-  ),
-  new Weather(
-    null,
-    null,
-    "london",
-    BASE_WEATHER_URL,
-    "metric",
-    WEATHER_API_KEY
-  ),
+  new Weather(1, "new york", "metric"),
+  new Weather(2, "shanghai", "metric"),
+  new Weather(3, "berlin", "metric"),
+  new Weather(4, "washington", "metric"),
+  new Weather(5, "delhi", "metric"),
+  new Weather(6, "lagos", "metric"),
+  new Weather(7, "beijing", "metric"),
+  new Weather(8, "london", "metric"),
 ];

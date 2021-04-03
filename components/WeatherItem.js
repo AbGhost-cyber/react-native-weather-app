@@ -1,24 +1,20 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import {
   StyleSheet,
   Text,
   View,
   ActivityIndicator,
   Dimensions,
+  Button,
 } from "react-native";
-import * as Location from "expo-location";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
-import { BASE_WEATHER_URL } from "../constants";
-import { WEATHER_API_KEY } from "react-native-dotenv";
 import WeatherInfo from "./WeatherInfo";
 import UnitsPicker from "./UnitsPicker";
 import { colors } from "../constants/index";
 import ReloadIcon from "./ReloadIcon";
 import WeatherDetails from "./WeatherDetails";
-import Weather from "../model/Weather";
-import { addWeather } from "../store/actions/weather";
 
 const { width } = Dimensions.get("window");
 
@@ -27,26 +23,19 @@ const WeatherItem = ({ unitsys, weatherUrl }) => {
   const [currentWeather, setCurrentWeather] = useState(null);
   const [unitsSystem, setUnitsSystem] = useState(unitsys);
 
-  const dispatch = useDispatch();
-
-  //export let userLocationWeather;
+  const userLocIsSaved = useSelector((state) => state.weathers.isLocSaved);
 
   useEffect(() => {
-    load();
-  }, [unitsSystem]);
+    //if user's location data has been saved to redux then load other cities
+    if (userLocIsSaved) {
+      load();
+    }
+  }, [unitsSystem, userLocIsSaved]);
 
-  async function load() {
+  const load = async () => {
     setCurrentWeather(null);
     setErrorMessage(null);
     try {
-      //request location permission
-      let { status } = await Location.requestPermissionsAsync();
-      if (status !== "granted") {
-        setErrorMessage("Access to Location is required to run the app");
-        return;
-      }
-      //const weatherUrl = `${BASE_WEATHER_URL}lat=${latitude}&lon=${longitude}&units=${unitsSystem}&appid=${WEATHER_API_KEY}`;
-      addUserLocationWeather();
       const response = await fetch(weatherUrl);
       const result = await response.json();
 
@@ -58,17 +47,7 @@ const WeatherItem = ({ unitsys, weatherUrl }) => {
     } catch (error) {
       setErrorMessage(error.message);
     }
-  }
-
-  const addUserLocationWeather = useCallback(async () => {
-    const location = await Location.getCurrentPositionAsync();
-
-    const { latitude, longitude } = location.coords;
-
-    dispatch(
-      addWeather(latitude, longitude, null, BASE_WEATHER_URL, unitsSystem)
-    );
-  }, [unitsSystem]);
+  };
 
   if (currentWeather) {
     return (
@@ -80,6 +59,7 @@ const WeatherItem = ({ unitsys, weatherUrl }) => {
             setUnitsSystem={setUnitsSystem}
           />
           <ReloadIcon load={load} />
+
           <WeatherInfo currentWeather={currentWeather} />
         </View>
         <WeatherDetails

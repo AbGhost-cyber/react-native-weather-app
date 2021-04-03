@@ -1,26 +1,31 @@
 import { WeatherDataItems } from "../../data/WeatherData";
 import Weather from "../../model/Weather";
-import { ADD_USER_LOCATION_WEATHER } from "../actions/weather";
+import { ADD_USER_LOCATION_WEATHER, USER_LOC_SAVED } from "../actions/weather";
 
 export const initialState = {
   weatherData: WeatherDataItems,
+  isLocSaved: false,
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
     case ADD_USER_LOCATION_WEATHER:
       const userLocWeather = new Weather(
-        action.locData.latitude,
-        action.locData.longtitude,
+        10,
         action.locData.cityName,
-        action.locData.baseUrl,
-        action.locData.unitsSystem,
-        action.locData.apiKey
+        action.locData.unitsSystem
       );
+      const updatedWeatherData = state.weatherData.slice()
+      updatedWeatherData.unshift(userLocWeather);
 
       return {
         ...state,
-        weatherData: state.weatherData.splice(0, 0, userLocWeather),
+        weatherData: updatedWeatherData,
+      };
+    case USER_LOC_SAVED:
+      return {
+        ...state,
+        isLocSaved: action.isSaved,
       };
   }
   return state;
