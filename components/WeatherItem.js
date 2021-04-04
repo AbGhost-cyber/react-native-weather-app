@@ -6,7 +6,6 @@ import {
   View,
   ActivityIndicator,
   Dimensions,
-  Button,
 } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -15,29 +14,34 @@ import UnitsPicker from "./UnitsPicker";
 import { colors } from "../constants/index";
 import ReloadIcon from "./ReloadIcon";
 import WeatherDetails from "./WeatherDetails";
+import { WEATHER_API_KEY } from "react-native-dotenv";
+import { BASE_WEATHER_URL } from "../constants";
 
 const { width } = Dimensions.get("window");
 
-const WeatherItem = ({ unitsys, weatherUrl }) => {
+const WeatherItem = ({ city }) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [currentWeather, setCurrentWeather] = useState(null);
-  const [unitsSystem, setUnitsSystem] = useState(unitsys);
+  const [unitsSystem, setUnitsSystem] = useState("metric");
 
-  const userLocIsSaved = useSelector((state) => state.weathers.isLocSaved);
+  const userLocState = useSelector((state) => state.weathers.userLocState);
 
   useEffect(() => {
     //if user's location data has been saved to redux then load other cities
-    if (userLocIsSaved) {
+    if (userLocState.isSaved && !userLocState.wasRejected) {
       load();
     }
-  }, [unitsSystem, userLocIsSaved]);
+    console.log(userLocState);
+  }, [unitsSystem, userLocState]);
 
   const load = async () => {
     setCurrentWeather(null);
     setErrorMessage(null);
+    let weatherUrl = `${BASE_WEATHER_URL}q=${city}&units=${unitsSystem}&appid=${WEATHER_API_KEY}`;
     try {
       const response = await fetch(weatherUrl);
       const result = await response.json();
+      console.log(result);
 
       if (response.ok) {
         setCurrentWeather(result);
@@ -49,7 +53,7 @@ const WeatherItem = ({ unitsys, weatherUrl }) => {
     }
   };
 
-  if (currentWeather) {
+  if (currentWeather || userLocState.IsSaved) {
     return (
       <View style={styles.container}>
         <StatusBar style="auto" />
@@ -68,10 +72,14 @@ const WeatherItem = ({ unitsys, weatherUrl }) => {
         />
       </View>
     );
-  } else if (errorMessage) {
+  } else if (errorMessage || userLocState.wasRejected) {
     return (
       <View style={styles.container}>
-        <Text style={{ alignSelf: "center" }}>{errorMessage}</Text>
+        <Text style={{ alignSelf: "center" }}>
+          {errorMessage
+            ? errorMessage
+            : "Access to Location is required to run the app"}
+        </Text>
         <ReloadIcon load={load} />
         <StatusBar style="auto" />
       </View>

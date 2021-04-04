@@ -3,19 +3,22 @@ import Weather from "../../model/Weather";
 export const ADD_USER_LOCATION_WEATHER = "ADD_USER_LOCATION_WEATHER";
 export const USER_LOC_SAVED = "USER_LOC_SAVED";
 
-export const addWeather = (cityName, unitsSystem) => {
+export const addWeather = (id, cityName) => {
   return {
     type: ADD_USER_LOCATION_WEATHER,
     locData: {
+      id,
       cityName,
-      unitsSystem,
     },
   };
 };
 
-export const userLocIsSaved = (isSaved) => {
+export const checkUserLocState = (wasRejected, isSaved) => {
   return {
     type: USER_LOC_SAVED,
-    isSaved,
+    locState: {
+      wasRejected,
+      isSaved,
+    },
   };
 };

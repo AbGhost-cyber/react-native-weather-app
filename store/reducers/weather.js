@@ -1,21 +1,21 @@
 import { WeatherDataItems } from "../../data/WeatherData";
+import UserLocState from "../../model/UserLocState";
 import Weather from "../../model/Weather";
 import { ADD_USER_LOCATION_WEATHER, USER_LOC_SAVED } from "../actions/weather";
 
 export const initialState = {
   weatherData: WeatherDataItems,
-  isLocSaved: false,
+  userLocState: UserLocState,
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
     case ADD_USER_LOCATION_WEATHER:
       const userLocWeather = new Weather(
-        10,
-        action.locData.cityName,
-        action.locData.unitsSystem
+        action.locData.id,
+        action.locData.cityName
       );
-      const updatedWeatherData = state.weatherData.slice()
+      const updatedWeatherData = state.weatherData.slice();
       updatedWeatherData.unshift(userLocWeather);
 
       return {
@@ -23,9 +23,13 @@ export default (state = initialState, action) => {
         weatherData: updatedWeatherData,
       };
     case USER_LOC_SAVED:
+      const userLocState = new UserLocState(
+        action.locState.wasRejected,
+        action.locState.isSaved
+      );
       return {
         ...state,
-        isLocSaved: action.isSaved,
+        userLocState,
       };
   }
   return state;

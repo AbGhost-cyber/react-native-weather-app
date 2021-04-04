@@ -9,4 +9,7 @@
 // }
 // console.log(x);
 
+var error = null;
+var wasRejected = "was rejected";
 
+console.log(error ? error : wasRejected);
