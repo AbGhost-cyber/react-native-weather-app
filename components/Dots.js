@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import Animated, { Extrapolate, interpolate } from "react-native-reanimated";
 import { colors } from "../constants";
+import { Ionicons } from "@expo/vector-icons";
 
 const Dots = ({ index, currentIndex }) => {
   const opacity = interpolate(currentIndex, {
@@ -18,18 +19,15 @@ const Dots = ({ index, currentIndex }) => {
 
   return (
     <Animated.View
-      style={{ ...styles.dot, opacity: opacity, transform: [{ scale }] }}
-    />
+      style={{ margin: 4, opacity: opacity, transform: [{ scale }] }}
+    >
+      <Ionicons
+        name={index === 0 ? "navigate" : "ellipse-sharp"}
+        size={12}
+        color={colors.PRIMARY_COLOR}
+      />
+    </Animated.View>
   );
 };
-const styles = StyleSheet.create({
-  dot: {
-    backgroundColor: colors.PRIMARY_COLOR,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    margin: 8,
-  },
-});
 
 export default Dots;

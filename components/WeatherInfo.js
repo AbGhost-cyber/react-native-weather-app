@@ -17,7 +17,7 @@ const WeatherInfo = ({ currentWeather }) => {
 
   return (
     <View style={styles.weatherInfo}>
-      <Text>{name}</Text>
+      <Text style={{ fontFamily: PRO_SANS_BOLD }}>{name}</Text>
       <Image source={{ uri: iconUrl }} style={styles.weatherIcon} />
       <Text style={styles.textPrimary}>{temp}°</Text>
       <Text style={styles.weatherDesc}>{description}</Text>
@@ -50,6 +50,6 @@ const styles = StyleSheet.create({
     color: SECONDARY_COLOR,
     fontFamily: PRO_SANS,
     fontWeight: "500",
-    marginTop:10
+    marginTop: 10,
   },
 });

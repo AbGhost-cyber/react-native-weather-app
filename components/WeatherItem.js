@@ -31,18 +31,16 @@ const WeatherItem = ({ city }) => {
     if (userLocState.isSaved && !userLocState.wasRejected) {
       load();
     }
-    console.log(userLocState);
   }, [unitsSystem, userLocState]);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setCurrentWeather(null);
     setErrorMessage(null);
     let weatherUrl = `${BASE_WEATHER_URL}q=${city}&units=${unitsSystem}&appid=${WEATHER_API_KEY}`;
     try {
       const response = await fetch(weatherUrl);
       const result = await response.json();
-      console.log(result);
-
+      
       if (response.ok) {
         setCurrentWeather(result);
       } else {
@@ -51,25 +49,56 @@ const WeatherItem = ({ city }) => {
     } catch (error) {
       setErrorMessage(error.message);
     }
-  };
+  }, []);
+
+  const formattedUnixTime = useCallback((sunrise, sunset, timezone) => {
+    const sunriseDate = new Date((sunrise + timezone) * 1000);
+    const sunsetDate = new Date((sunset + timezone) * 1000);
+
+    const sunriseTime = sunriseDate.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
+
+    const sunsetTime = sunsetDate.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
+
+    return `${sunriseTime}/${sunsetTime}`;
+  }, []);
 
   if (currentWeather || userLocState.IsSaved) {
+    let [sunRiseTime, sunSetTime] = formattedUnixTime(
+      currentWeather.sys.sunrise,
+      currentWeather.sys.sunset,
+      currentWeather.timezone - currentWeather.dt - 2
+    ).split("/");
     return (
       <View style={styles.container}>
         <StatusBar style="auto" />
+        <ReloadIcon
+          load={() => {
+            load();
+          }}
+        />
+        <UnitsPicker
+          unitsSystem={unitsSystem}
+          setUnitsSystem={setUnitsSystem}
+        />
         <View style={styles.main}>
-          <UnitsPicker
-            unitsSystem={unitsSystem}
-            setUnitsSystem={setUnitsSystem}
-          />
-          <ReloadIcon load={load} />
-
           <WeatherInfo currentWeather={currentWeather} />
         </View>
-        <WeatherDetails
-          currentWeather={currentWeather}
-          unitsSystem={unitsSystem}
-        />
+        <View style={{ justifyContent: "center", marginTop: 30 }}>
+          <WeatherDetails
+            sunRiseTime={sunRiseTime}
+            sunSetTime={sunSetTime}
+            currentWeather={currentWeather}
+            unitsSystem={unitsSystem}
+          />
+        </View>
       </View>
     );
   } else if (errorMessage || userLocState.wasRejected) {
@@ -80,7 +109,11 @@ const WeatherItem = ({ city }) => {
             ? errorMessage
             : "Access to Location is required to run the app"}
         </Text>
-        <ReloadIcon load={load} />
+        <ReloadIcon
+          load={() => {
+            load();
+          }}
+        />
         <StatusBar style="auto" />
       </View>
     );
@@ -88,7 +121,11 @@ const WeatherItem = ({ city }) => {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color={colors.PRIMARY_COLOR} />
-        <ReloadIcon load={load} />
+        <ReloadIcon
+          load={() => {
+            load();
+          }}
+        />
         <StatusBar style="auto" />
       </View>
     );
@@ -106,7 +143,8 @@ const styles = StyleSheet.create({
   },
   main: {
     justifyContent: "center",
-    flex: 1,
+    marginTop: 60,
+    //flex: 1,
   },
   pagination: {
     flexDirection: "row",

@@ -21,19 +21,16 @@ const WeatherScreen = (props) => {
   const fetchUserLocData = useCallback(async () => {
     let { status } = await Location.requestPermissionsAsync();
     if (status !== "granted") {
-      // setErrorMessage("Access to Location is required to run the app");
       dispatch(weatherActions.checkUserLocState(true, false));
       return;
     }
     const location = await Location.getCurrentPositionAsync();
 
     const city = await Location.reverseGeocodeAsync(location.coords);
-    console.log(city[0].city);
 
     dispatch(addWeather(9, city[0].city));
     dispatch(weatherActions.checkUserLocState(false, true));
     console.log("dispatched");
-    console.log(weatherData);
   }, [dispatch]);
 
   useEffect(() => {
@@ -53,7 +50,13 @@ const WeatherScreen = (props) => {
           {...scrollHandler}
         >
           {weatherData.map((weather, index) => {
-            return <WeatherItem key={index} city={weather.cityName} />;
+            return (
+              <WeatherItem
+                key={index}
+                city={weather.cityName}
+                countryCode={weather.countryCode}
+              />
+            );
           })}
         </Animated.ScrollView>
       </Animated.View>
@@ -80,8 +83,7 @@ const styles = StyleSheet.create({
     height: height,
   },
   pagination: {
-    top: -290,
+    top: -70,
     flexDirection: "row",
-    //marginTop: -500,
   },
 });

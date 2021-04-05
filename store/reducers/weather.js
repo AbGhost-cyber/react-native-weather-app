@@ -20,7 +20,7 @@ export default (state = initialState, action) => {
 
       return {
         ...state,
-        weatherData: updatedWeatherData,
+        weatherData: state.weatherData.concat(userLocWeather),
       };
     case USER_LOC_SAVED:
       const userLocState = new UserLocState(
