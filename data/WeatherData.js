@@ -8,5 +8,5 @@ export const WeatherDataItems = [
   new Weather(5, "delhi"),
   new Weather(6, "lagos"),
   new Weather(7, "beijing"),
-  new Weather(8, "london"),
+ new Weather(8, "london"),
 ];

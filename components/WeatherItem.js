@@ -28,7 +28,7 @@ const WeatherItem = ({ city }) => {
 
   useEffect(() => {
     //if user's location data has been saved to redux then load other cities
-    if (userLocState.isSaved && !userLocState.wasRejected) {
+    if (userLocState.isSaved) {
       load();
     }
   }, [unitsSystem, userLocState]);
@@ -40,7 +40,8 @@ const WeatherItem = ({ city }) => {
     try {
       const response = await fetch(weatherUrl);
       const result = await response.json();
-      
+      console.log(result.timezone);
+
       if (response.ok) {
         setCurrentWeather(result);
       } else {
@@ -49,11 +50,11 @@ const WeatherItem = ({ city }) => {
     } catch (error) {
       setErrorMessage(error.message);
     }
-  }, []);
+  }, [city, unitsSystem]);
 
-  const formattedUnixTime = useCallback((sunrise, sunset, timezone) => {
-    const sunriseDate = new Date((sunrise + timezone) * 1000);
-    const sunsetDate = new Date((sunset + timezone) * 1000);
+  const formattedUnixTime = useCallback((sunrise, sunset, offset) => {
+    const sunriseDate = new Date((sunrise + offset) * 1000);
+    const sunsetDate = new Date((sunset + offset) * 1000);
 
     const sunriseTime = sunriseDate.toLocaleTimeString("en-US", {
       hour: "numeric",
@@ -74,7 +75,7 @@ const WeatherItem = ({ city }) => {
     let [sunRiseTime, sunSetTime] = formattedUnixTime(
       currentWeather.sys.sunrise,
       currentWeather.sys.sunset,
-      currentWeather.timezone - currentWeather.dt - 2
+      (currentWeather.timezone - currentWeather.dt)
     ).split("/");
     return (
       <View style={styles.container}>

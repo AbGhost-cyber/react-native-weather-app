@@ -27,8 +27,8 @@ const WeatherScreen = (props) => {
     const location = await Location.getCurrentPositionAsync();
 
     const city = await Location.reverseGeocodeAsync(location.coords);
-
-    dispatch(addWeather(9, city[0].city));
+    console.log(city[0].city);
+    dispatch(addWeather(10, city[0].city));
     dispatch(weatherActions.checkUserLocState(false, true));
     console.log("dispatched");
   }, [dispatch]);
@@ -50,13 +50,7 @@ const WeatherScreen = (props) => {
           {...scrollHandler}
         >
           {weatherData.map((weather, index) => {
-            return (
-              <WeatherItem
-                key={index}
-                city={weather.cityName}
-                countryCode={weather.countryCode}
-              />
-            );
+            return <WeatherItem key={index} city={weather.cityName} />;
           })}
         </Animated.ScrollView>
       </Animated.View>

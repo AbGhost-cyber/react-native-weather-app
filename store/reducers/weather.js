@@ -15,12 +15,13 @@ export default (state = initialState, action) => {
         action.locData.id,
         action.locData.cityName
       );
-      const updatedWeatherData = state.weatherData.slice();
+      let updatedWeatherData = state.weatherData.slice();
       updatedWeatherData.unshift(userLocWeather);
+
 
       return {
         ...state,
-        weatherData: state.weatherData.concat(userLocWeather),
+        weatherData: updatedWeatherData
       };
     case USER_LOC_SAVED:
       const userLocState = new UserLocState(
