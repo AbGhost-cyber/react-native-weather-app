@@ -1,4 +1,4 @@
-import { WeatherDataItems } from "../../data/WeatherData";
+import { WeatherDataItems } from "../../screenshots/data/WeatherData";
 import UserLocState from "../../model/UserLocState";
 import Weather from "../../model/Weather";
 import { ADD_USER_LOCATION_WEATHER, USER_LOC_SAVED } from "../actions/weather";

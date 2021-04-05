@@ -1,4 +1,4 @@
-import Weather from "../model/Weather";
+import Weather from "../../model/Weather";
 
 export const WeatherDataItems = [
   new Weather(1, "new york"),
